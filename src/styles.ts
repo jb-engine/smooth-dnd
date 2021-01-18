@@ -119,7 +119,7 @@ function addCursorStyleToBody(cursor: string) {
 		const style = window.document.createElement("style") as any;
 		const cssString = convertToCssString({
 			'body *': {
-				cursor: `${cursor} !important`
+				cursor: `${cursor}`
 			}
 		});
 		style.type = 'text/css';
