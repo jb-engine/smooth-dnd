@@ -3,7 +3,7 @@ import { defaultOptions } from './defaults';
 import dragScroller from './scroller';
 import { Axis, DraggableInfo, ElementX, GhostInfo, IContainer, MousePosition, Position, TopLeft, Orientation } from './interfaces';
 import './polyfills';
-import { addCursorStyleToBody, addStyleToHead, removeStyle } from './styles';
+import { addStyleToHead, removeStyle } from './styles';
 import * as Utils from './utils';
 import { ContainerOptions } from './exportTypes';
 
@@ -112,11 +112,7 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
   if (container.getOptions().dragClass) {
     setTimeout(() => {
       Utils.addClass(ghost.firstElementChild as HTMLElement, container.getOptions().dragClass!);
-      const dragCursor = window.getComputedStyle(ghost.firstElementChild!).cursor;
-      cursorStyleElement = addCursorStyleToBody(dragCursor!);
     });
-  } else {
-    cursorStyleElement = addCursorStyleToBody(cursor);
   }
   Utils.addClass(ghost, container.getOptions().orientation || 'vertical');
   Utils.addClass(ghost, constants.ghostClass);
