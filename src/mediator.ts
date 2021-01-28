@@ -116,11 +116,11 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
       cursorStyleElement = addCursorStyleToBody(dragCursor!);
     });
   } else {
-    // cursorStyleElement = addCursorStyleToBody(cursor);
-    if (cursorStyleElement) {
-      removeStyle(cursorStyleElement);
-      cursorStyleElement = null;
-    }
+    cursorStyleElement = addCursorStyleToBody(cursor);
+    // if (cursorStyleElement) {
+    //   removeStyle(cursorStyleElement);
+    //   cursorStyleElement = null;
+    // }
   }
   Utils.addClass(ghost, container.getOptions().orientation || 'vertical');
   Utils.addClass(ghost, constants.ghostClass);
@@ -471,10 +471,10 @@ function handleMissedDragFrame() {
   if (missedDrag) {
     missedDrag = false;
     handleDragImmediate(draggableInfo, dragListeningContainers);
-    if (cursorStyleElement) {
-      removeStyle(cursorStyleElement);
-      cursorStyleElement = null;
-    }
+    // if (cursorStyleElement) {
+    //   removeStyle(cursorStyleElement);
+    //   cursorStyleElement = null;
+    // }
   }
 }
 
@@ -637,10 +637,10 @@ function initiateDrag(position: MousePosition, cursor: string) {
 let ghostAnimationFrame: number | null = null;
 function translateGhost(translateDuration = 0, scale = 1, fadeOut = false) {
   console.log('translateGhost');
-  if (cursorStyleElement) {
-    removeStyle(cursorStyleElement);
-    cursorStyleElement = null;
-  }
+  // if (cursorStyleElement) {
+  //   removeStyle(cursorStyleElement);
+  //   cursorStyleElement = null;
+  // }
   const { ghost, topLeft: { x, y } } = ghostInfo;
   const useTransform = draggableInfo.container ? draggableInfo.container.shouldUseTransformForGhost() : true;
 
@@ -765,10 +765,10 @@ function cancelDrag() {
   if (isDragging && !isCanceling && !dropAnimationStarted) {
     isCanceling = true;
     missedDrag = false;
-    if (cursorStyleElement) {
-      removeStyle(cursorStyleElement);
-      cursorStyleElement = null;
-    }
+    // if (cursorStyleElement) {
+    //   removeStyle(cursorStyleElement);
+    //   cursorStyleElement = null;
+    // }
     const outOfBoundsDraggableInfo: DraggableInfo = Object.assign({}, draggableInfo, {
       targetElement: null,
       position: { x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER },
