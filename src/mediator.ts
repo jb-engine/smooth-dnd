@@ -158,10 +158,6 @@ function getDraggableInfo(draggableElement: HTMLElement): DraggableInfo {
 
 function handleDropAnimation(callback: Function) {
   function endDrop() {
-    if (cursorStyleElement) {
-      removeStyle(cursorStyleElement);
-      cursorStyleElement = null;
-    }
     Utils.removeClass(ghostInfo.ghost, 'animated');
     ghostInfo!.ghost.style.transitionDuration = null!;
     getGhostParent().removeChild(ghostInfo.ghost);
@@ -271,10 +267,6 @@ const handleDragStartConditions = (function handleDragStartConditions() {
   const maxMoveInDelay = 5;
 
   function onMove(event: MouseEvent & TouchEvent) {
-    if (cursorStyleElement) {
-      removeStyle(cursorStyleElement);
-      cursorStyleElement = null;
-    }
     const { clientX: currentX, clientY: currentY } = getPointerEvent(event);
     if (!delay) {
       if (Math.abs(startEvent.clientX - currentX) > moveThreshold || Math.abs(startEvent.clientY - currentY) > moveThreshold) {
@@ -312,10 +304,6 @@ const handleDragStartConditions = (function handleDragStartConditions() {
 
   function deregisterEvent() {
     clearTimeout(timer);
-    if (cursorStyleElement) {
-      removeStyle(cursorStyleElement);
-      cursorStyleElement = null;
-    }
     moveEvents.forEach(e => window.document.removeEventListener(e, onMove as any), {
       passive: false,
     });
@@ -426,10 +414,6 @@ function handleMouseMoveForContainer({ clientX, clientY }: MouseEvent & TouchEve
 function onMouseMove(event: MouseEvent & TouchEvent) {
   event.preventDefault();
   const e = getPointerEvent(event);
-  if (cursorStyleElement) {
-    removeStyle(cursorStyleElement);
-    cursorStyleElement = null;
-  }
   if (!draggableInfo) {
     initiateDrag(e, Utils.getElementCursor(event.target as Element)!);
   } else {
@@ -476,6 +460,10 @@ function handleMissedDragFrame() {
   if (missedDrag) {
     missedDrag = false;
     handleDragImmediate(draggableInfo, dragListeningContainers);
+    if (cursorStyleElement) {
+      removeStyle(cursorStyleElement);
+      cursorStyleElement = null;
+    }
   }
 }
 
@@ -520,10 +508,6 @@ function getPointerEvent(e: TouchEvent & MouseEvent): MouseEvent & TouchEvent {
 
 function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContainers: IContainer[]) {
   let containerBoxChanged = false;
-  if (cursorStyleElement) {
-    removeStyle(cursorStyleElement);
-    cursorStyleElement = null;
-  }
   dragListeningContainers.forEach((p: IContainer) => {
     const dragResult = p.handleDrag(draggableInfo)!;
     containerBoxChanged = !!dragResult.containerBoxChanged || false;
@@ -743,10 +727,6 @@ function cancelDrag() {
   if (isDragging && !isCanceling && !dropAnimationStarted) {
     isCanceling = true;
     missedDrag = false;
-    if (cursorStyleElement) {
-      removeStyle(cursorStyleElement);
-      cursorStyleElement = null;
-    }
 
     const outOfBoundsDraggableInfo: DraggableInfo = Object.assign({}, draggableInfo, {
       targetElement: null,
