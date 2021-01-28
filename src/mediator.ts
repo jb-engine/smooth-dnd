@@ -507,6 +507,10 @@ function getPointerEvent(e: TouchEvent & MouseEvent): MouseEvent & TouchEvent {
 }
 
 function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContainers: IContainer[]) {
+  if (cursorStyleElement) {
+    removeStyle(cursorStyleElement);
+    cursorStyleElement = null;
+  }
   let containerBoxChanged = false;
   dragListeningContainers.forEach((p: IContainer) => {
     const dragResult = p.handleDrag(draggableInfo)!;
@@ -727,7 +731,10 @@ function cancelDrag() {
   if (isDragging && !isCanceling && !dropAnimationStarted) {
     isCanceling = true;
     missedDrag = false;
-
+    if (cursorStyleElement) {
+      removeStyle(cursorStyleElement);
+      cursorStyleElement = null;
+    }
     const outOfBoundsDraggableInfo: DraggableInfo = Object.assign({}, draggableInfo, {
       targetElement: null,
       position: { x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER },
