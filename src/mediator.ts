@@ -507,10 +507,6 @@ function getPointerEvent(e: TouchEvent & MouseEvent): MouseEvent & TouchEvent {
 }
 
 function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContainers: IContainer[]) {
-  if (cursorStyleElement) {
-    removeStyle(cursorStyleElement);
-    cursorStyleElement = null;
-  }
   let containerBoxChanged = false;
   dragListeningContainers.forEach((p: IContainer) => {
     const dragResult = p.handleDrag(draggableInfo)!;
