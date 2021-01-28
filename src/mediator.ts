@@ -570,7 +570,10 @@ function getScrollHandler(container: IContainer, dragListeningContainers: IConta
 
 function fireOnDragStartEnd(isStart: boolean) {
   console.log('fireOnDragStartEnd');
-
+  if (cursorStyleElement) {
+    removeStyle(cursorStyleElement);
+    cursorStyleElement = null;
+  }
   containers.forEach(p => {
     const fn = isStart ? p.getOptions().onDragStart : p.getOptions().onDragEnd;
     if (fn) {
@@ -634,7 +637,10 @@ function initiateDrag(position: MousePosition, cursor: string) {
 let ghostAnimationFrame: number | null = null;
 function translateGhost(translateDuration = 0, scale = 1, fadeOut = false) {
   console.log('translateGhost');
-
+  if (cursorStyleElement) {
+    removeStyle(cursorStyleElement);
+    cursorStyleElement = null;
+  }
   const { ghost, topLeft: { x, y } } = ghostInfo;
   const useTransform = draggableInfo.container ? draggableInfo.container.shouldUseTransformForGhost() : true;
 
