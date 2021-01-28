@@ -116,7 +116,11 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
       cursorStyleElement = addCursorStyleToBody(dragCursor!);
     });
   } else {
-    cursorStyleElement = addCursorStyleToBody(cursor);
+    // cursorStyleElement = addCursorStyleToBody(cursor);
+    if (cursorStyleElement) {
+      removeStyle(cursorStyleElement);
+      cursorStyleElement = null;
+    }
   }
   Utils.addClass(ghost, container.getOptions().orientation || 'vertical');
   Utils.addClass(ghost, constants.ghostClass);
@@ -157,6 +161,7 @@ function getDraggableInfo(draggableElement: HTMLElement): DraggableInfo {
 }
 
 function handleDropAnimation(callback: Function) {
+  console.log('handleDropAnimation');
   function endDrop() {
     Utils.removeClass(ghostInfo.ghost, 'animated');
     ghostInfo!.ghost.style.transitionDuration = null!;
@@ -331,6 +336,8 @@ const handleDragStartConditions = (function handleDragStartConditions() {
 })();
 
 function onMouseDown(event: MouseEvent & TouchEvent) {
+  console.log('onMouseDown');
+
   const e = getPointerEvent(event);
   if (!isDragging && (e.button === undefined || e.button === 0)) {
     grabbedElement = Utils.getParent(e.target as Element, '.' + constants.wrapperClass) as ElementX;
@@ -376,6 +383,8 @@ function onMouseDown(event: MouseEvent & TouchEvent) {
 }
 
 function handleMouseMoveForContainer({ clientX, clientY }: MouseEvent & TouchEvent, orientation: Orientation = 'vertical') {
+  console.log('handleMouseMoveForContainer');
+
   const beginEnd = draggableInfo.container.layout.getBeginEndOfContainerVisibleRect();
   let mousePos;
   let axis: 'x' | 'y';
@@ -412,6 +421,8 @@ function handleMouseMoveForContainer({ clientX, clientY }: MouseEvent & TouchEve
 }
 
 function onMouseMove(event: MouseEvent & TouchEvent) {
+  console.log('onMouseMove');
+
   event.preventDefault();
   const e = getPointerEvent(event);
   if (!draggableInfo) {
@@ -507,6 +518,8 @@ function getPointerEvent(e: TouchEvent & MouseEvent): MouseEvent & TouchEvent {
 }
 
 function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContainers: IContainer[]) {
+  console.log('handleDragImmediate');
+
   let containerBoxChanged = false;
   dragListeningContainers.forEach((p: IContainer) => {
     const dragResult = p.handleDrag(draggableInfo)!;
@@ -526,6 +539,8 @@ function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContaine
 }
 
 function dragHandler(dragListeningContainers: IContainer[]): (draggableInfo: DraggableInfo) => boolean {
+  console.log('dragHandler');
+
   let targetContainers = dragListeningContainers;
   let animationFrame: number | null = null;
   return function (draggableInfo: DraggableInfo): boolean {
@@ -544,6 +559,8 @@ function dragHandler(dragListeningContainers: IContainer[]): (draggableInfo: Dra
 }
 
 function getScrollHandler(container: IContainer, dragListeningContainers: IContainer[]) {
+  console.log('getScrollHandler');
+
   if (container.getOptions().autoScrollEnabled) {
     return dragScroller(dragListeningContainers, container.getScrollMaxSpeed());
   } else {
@@ -552,6 +569,8 @@ function getScrollHandler(container: IContainer, dragListeningContainers: IConta
 }
 
 function fireOnDragStartEnd(isStart: boolean) {
+  console.log('fireOnDragStartEnd');
+
   containers.forEach(p => {
     const fn = isStart ? p.getOptions().onDragStart : p.getOptions().onDragEnd;
     if (fn) {
@@ -570,7 +589,11 @@ function fireOnDragStartEnd(isStart: boolean) {
 }
 
 function initiateDrag(position: MousePosition, cursor: string) {
+  console.log('initiateDrag');
+
   if (grabbedElement !== null) {
+    console.log('grabbedElement');
+
     isDragging = true;
     const container = (containers.filter(p => grabbedElement!.parentElement === p.element)[0]) as IContainer;
     container.setDraggables();
@@ -610,6 +633,8 @@ function initiateDrag(position: MousePosition, cursor: string) {
 
 let ghostAnimationFrame: number | null = null;
 function translateGhost(translateDuration = 0, scale = 1, fadeOut = false) {
+  console.log('translateGhost');
+
   const { ghost, topLeft: { x, y } } = ghostInfo;
   const useTransform = draggableInfo.container ? draggableInfo.container.shouldUseTransformForGhost() : true;
 
@@ -651,6 +676,8 @@ function translateGhost(translateDuration = 0, scale = 1, fadeOut = false) {
 }
 
 function registerContainer(container: IContainer) {
+  console.log('registerContainer');
+
   containers.push(container);
 
   if (isDragging && draggableInfo) {
@@ -669,6 +696,8 @@ function registerContainer(container: IContainer) {
 }
 
 function unregisterContainer(container: IContainer) {
+  console.log('unregisterContainer');
+
   containers.splice(containers.indexOf(container), 1);
 
   if (isDragging && draggableInfo) {
@@ -693,6 +722,8 @@ function unregisterContainer(container: IContainer) {
 }
 
 function watchRectangles() {
+  console.log('watchRectangles');
+
   let animationHandle: number | null = null;
   let isStarted = false;
   function _start() {
@@ -724,6 +755,7 @@ function watchRectangles() {
 }
 
 function cancelDrag() {
+  console.log('cancelDrag');
   if (isDragging && !isCanceling && !dropAnimationStarted) {
     isCanceling = true;
     missedDrag = false;
