@@ -116,7 +116,11 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
       cursorStyleElement = addCursorStyleToBody(dragCursor!);
     });
   } else {
-    cursorStyleElement = addCursorStyleToBody(cursor);
+    // cursorStyleElement = addCursorStyleToBody(cursor);
+    if (cursorStyleElement) {
+      removeStyle(cursorStyleElement);
+      cursorStyleElement = null;
+    }
   }
   Utils.addClass(ghost, container.getOptions().orientation || 'vertical');
   Utils.addClass(ghost, constants.ghostClass);
@@ -157,6 +161,7 @@ function getDraggableInfo(draggableElement: HTMLElement): DraggableInfo {
 }
 
 function handleDropAnimation(callback: Function) {
+  console.log('handleDropAnimation');
   function endDrop() {
     Utils.removeClass(ghostInfo.ghost, 'animated');
     ghostInfo!.ghost.style.transitionDuration = null!;
@@ -331,6 +336,7 @@ const handleDragStartConditions = (function handleDragStartConditions() {
 })();
 
 function onMouseDown(event: MouseEvent & TouchEvent) {
+  console.log('onMouseDown');
 
   const e = getPointerEvent(event);
   if (!isDragging && (e.button === undefined || e.button === 0)) {
@@ -377,6 +383,7 @@ function onMouseDown(event: MouseEvent & TouchEvent) {
 }
 
 function handleMouseMoveForContainer({ clientX, clientY }: MouseEvent & TouchEvent, orientation: Orientation = 'vertical') {
+  console.log('handleMouseMoveForContainer');
 
   const beginEnd = draggableInfo.container.layout.getBeginEndOfContainerVisibleRect();
   let mousePos;
@@ -414,6 +421,7 @@ function handleMouseMoveForContainer({ clientX, clientY }: MouseEvent & TouchEve
 }
 
 function onMouseMove(event: MouseEvent & TouchEvent) {
+  console.log('onMouseMove');
 
   event.preventDefault();
   const e = getPointerEvent(event);
@@ -463,6 +471,10 @@ function handleMissedDragFrame() {
   if (missedDrag) {
     missedDrag = false;
     handleDragImmediate(draggableInfo, dragListeningContainers);
+    if (cursorStyleElement) {
+      removeStyle(cursorStyleElement);
+      cursorStyleElement = null;
+    }
   }
 }
 
@@ -506,6 +518,7 @@ function getPointerEvent(e: TouchEvent & MouseEvent): MouseEvent & TouchEvent {
 }
 
 function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContainers: IContainer[]) {
+  console.log('handleDragImmediate');
 
   let containerBoxChanged = false;
   dragListeningContainers.forEach((p: IContainer) => {
@@ -526,6 +539,7 @@ function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContaine
 }
 
 function dragHandler(dragListeningContainers: IContainer[]): (draggableInfo: DraggableInfo) => boolean {
+  console.log('dragHandler');
 
   let targetContainers = dragListeningContainers;
   let animationFrame: number | null = null;
@@ -545,6 +559,7 @@ function dragHandler(dragListeningContainers: IContainer[]): (draggableInfo: Dra
 }
 
 function getScrollHandler(container: IContainer, dragListeningContainers: IContainer[]) {
+  console.log('getScrollHandler');
 
   if (container.getOptions().autoScrollEnabled) {
     return dragScroller(dragListeningContainers, container.getScrollMaxSpeed());
@@ -554,6 +569,7 @@ function getScrollHandler(container: IContainer, dragListeningContainers: IConta
 }
 
 function fireOnDragStartEnd(isStart: boolean) {
+  console.log('fireOnDragStartEnd');
   if (cursorStyleElement) {
     removeStyle(cursorStyleElement);
     cursorStyleElement = null;
@@ -576,8 +592,10 @@ function fireOnDragStartEnd(isStart: boolean) {
 }
 
 function initiateDrag(position: MousePosition, cursor: string) {
+  console.log('initiateDrag');
 
   if (grabbedElement !== null) {
+    console.log('grabbedElement');
 
     isDragging = true;
     const container = (containers.filter(p => grabbedElement!.parentElement === p.element)[0]) as IContainer;
@@ -618,6 +636,7 @@ function initiateDrag(position: MousePosition, cursor: string) {
 
 let ghostAnimationFrame: number | null = null;
 function translateGhost(translateDuration = 0, scale = 1, fadeOut = false) {
+  console.log('translateGhost');
   if (cursorStyleElement) {
     removeStyle(cursorStyleElement);
     cursorStyleElement = null;
@@ -663,6 +682,7 @@ function translateGhost(translateDuration = 0, scale = 1, fadeOut = false) {
 }
 
 function registerContainer(container: IContainer) {
+  console.log('registerContainer');
 
   containers.push(container);
 
@@ -682,6 +702,7 @@ function registerContainer(container: IContainer) {
 }
 
 function unregisterContainer(container: IContainer) {
+  console.log('unregisterContainer');
 
   containers.splice(containers.indexOf(container), 1);
 
@@ -707,6 +728,7 @@ function unregisterContainer(container: IContainer) {
 }
 
 function watchRectangles() {
+  console.log('watchRectangles');
 
   let animationHandle: number | null = null;
   let isStarted = false;
@@ -739,9 +761,14 @@ function watchRectangles() {
 }
 
 function cancelDrag() {
+  console.log('cancelDrag');
   if (isDragging && !isCanceling && !dropAnimationStarted) {
     isCanceling = true;
     missedDrag = false;
+    if (cursorStyleElement) {
+      removeStyle(cursorStyleElement);
+      cursorStyleElement = null;
+    }
     const outOfBoundsDraggableInfo: DraggableInfo = Object.assign({}, draggableInfo, {
       targetElement: null,
       position: { x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER },
